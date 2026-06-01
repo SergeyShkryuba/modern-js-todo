@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern JS Todo</title>
+    <!-- Подключаем Google Fonts для премиального вида -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1>Мои Задачи</h1>
+                <button id="theme-toggle" title="Переключить тему">
+                    <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+            <p id="date-display"></p>
+        </header>
+
+        <form id="todo-form">
+            <div class="input-group">
+                <input type="text" id="todo-input" placeholder="Что нужно сделать?" autocomplete="off">
+                <select id="priority-select">
+                    <option value="low">Низкий</option>
+                    <option value="medium" selected>Средний</option>
+                    <option value="high">Высокий</option>
+                </select>
+                <select id="category-select">
+                    <option value="general">📁 Общее</option>
+                    <option value="work">💼 Работа</option>
+                    <option value="personal">👤 Личное</option>
+                    <option value="shopping">🛒 Покупки</option>
+                </select>
+                <button type="submit" id="add-btn">Добавить</button>
+            </div>
+        </form>
+
+        <div class="search-container">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd" />
+            </svg>
+            <input type="text" id="search-input" placeholder="Поиск задач..." autocomplete="off">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="active">Активные</button>
+            <button class="filter-btn" data-filter="completed">Выполненные</button>
+        </div>
+
+        <ul id="todo-list">
+            <!-- Задачи будут появляться здесь динамически -->
+        </ul>
+
+        <!-- Состояние пустого списка -->
+        <div id="empty-state" class="empty-state hidden">
+            <div class="empty-illustration">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Квадрат чекбокса (массивный) -->
+                    <rect x="40" y="40" width="120" height="120" rx="24" stroke="var(--primary-color)" stroke-width="12"
+                        fill="none" opacity="0.2" />
+
+                    <!-- Галочка (жирная) -->
+                    <path d="M65 105 L95 135 L165 65" stroke="var(--primary-color)" stroke-width="16"
+                        stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+                    <!-- Карандаш (солидный) -->
+                    <g transform="translate(155 45) rotate(-15)">
+                        <!-- Тело карандаша -->
+                        <rect x="0" y="0" width="15" height="80" rx="2" fill="#f59e0b" />
+                        <!-- Наконечник с грифелем -->
+                        <path d="M0 80 L7.5 95 L15 80 Z" fill="#FFDAB9" />
+                        <path d="M5 90 L7.5 95 L10 90 Z" fill="#333" />
+                        <!-- Стирательная резинка -->
+                        <rect x="0" y="-10" width="15" height="12" rx="2" fill="#ec4899" />
+                        <rect x="0" y="0" width="15" height="4" fill="#94a3b8" />
+                    </g>
+
+                    <!-- Тень под карандашом для объема -->
+                    <circle cx="100" cy="170" r="50" fill="var(--primary-color)" opacity="0.05" />
+                </svg>
+
+
+            </div>
+            <h3>Все дела сделаны!</h3>
+            <p>Время отдохнуть и набраться сил ✨</p>
+        </div>
+
+
+        <div class="stats">
+            <span id="items-left">0 задач осталось</span>
+            <button id="clear-completed">Очистить выполненные</button>
+        </div>
+    </div>
+    <!-- Модальное окно для редактирования -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal">
+            <h3>Редактировать задачу</h3>
+            <input type="text" id="modal-input" placeholder="Введите текст...">
+            <div class="modal-selects">
+                <select id="modal-priority">
+                    <option value="low">Низкий</option>
+                    <option value="medium">Средний</option>
+                    <option value="high">Высокий</option>
+                </select>
+                <select id="modal-category">
+                    <option value="general">📁 Общее</option>
+                    <option value="work">💼 Работа</option>
+                    <option value="personal">👤 Личное</option>
+                    <option value="shopping">🛒 Покупки</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button id="modal-cancel">Отмена</button>
+                <button id="modal-save">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
