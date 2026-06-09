@@ -47,10 +47,12 @@ const state = {
 
     save() {
         localStorage.setItem('todos', JSON.stringify(this.todos));
-        render(); // Обновление данных всегда приводит к перерисовке интерфейса
+        render(); // Updating data always leads to UI re-render
     },
 
     addTodo(text, priority = 'medium', category = 'general') {
+        const priorityMap = { low: 'Low', medium: 'Medium', high: 'High' };
+        const categoryMap = { general: '📁 General', work: '💼 Work', personal: '👤 Personal', shopping: '🛒 Shopping' };
         this.todos.unshift({ id: Date.now(), text, priority, category, completed: false });
         this.save();
     },
@@ -76,7 +78,7 @@ const state = {
         this.save();
     },
 
-    // Получить отфильтрованный список задач для рендера
+    // Get filtered todo list for rendering
     getFilteredTodos() {
         return this.todos
             .filter(t => this.filter === 'active' ? !t.completed : this.filter === 'completed' ? t.completed : true)
@@ -84,8 +86,8 @@ const state = {
     }
 };
 
-// 3. ОТРИСОВКА (Render UI)
-// Создает HTML строку для одной задачи, возвращает готовый кусок верстки
+// 3. RENDER UI
+// Creates an HTML string for one todo, returns the ready block
 const createTodoMarkup = (todo) => `
     <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}" draggable="true">
         <div class="priority-badge priority-${todo.priority}"></div>
@@ -103,24 +105,24 @@ const createTodoMarkup = (todo) => `
     </li>
 `;
 
-// Основная функция отрисовки интерфейса
+// Main UI render function
 const render = () => {
     const filtered = state.getFilteredTodos();
 
-    // Обновляем список. Для Production-ready рендера часто используют библиотеки (React/Vue), 
-    // но innerHTML - самый чистый vanilla-способ при перерисовке простых компонентов.
+    // Updating list. For Production-ready render, libraries (React/Vue) are often used, 
+    // but innerHTML is the cleanest vanilla way for simple components re-render.
     DOM.list.innerHTML = filtered.map(createTodoMarkup).join('');
 
-    // Обновляем счетчик
+    // Update counter
     const activeCount = state.todos.filter(t => !t.completed).length;
-    DOM.itemsLeft.textContent = `${activeCount} задач${activeCount === 1 ? 'а' : ' осталось'}`;
+    DOM.itemsLeft.textContent = `${activeCount} task${activeCount === 1 ? '' : 's'} left`;
     
-    // Показываем/скрываем состояние пустого списка
+    // Show/hide empty list state
     DOM.emptyState.classList.toggle('hidden', filtered.length > 0);
     DOM.list.classList.toggle('hidden', filtered.length === 0);
 };
 
-// 4. УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ
+// 4. MODAL WINDOW MANAGEMENT
 const Modal = {
     open(id) {
         const todo = state.todos.find(t => t.id === id);
@@ -151,9 +153,9 @@ const Modal = {
     }
 };
 
-// 5. ИНИЦИАЛИЗАЦИЯ И СОБЫТИЯ
+// 5. INITIALIZATION AND EVENTS
 const initEvents = () => {
-    // === Добавление задачи ===
+    // === Add todo ===
     DOM.form.addEventListener('submit', (e) => {
         e.preventDefault();
         const text = DOM.input.value.trim();
@@ -163,25 +165,25 @@ const initEvents = () => {
         }
     });
 
-    // === ДЕЛЕГИРОВАНИЕ СОБЫТИЙ СПИСКА (Клики) ===
-    // Вместо прописывания onclick в HTML, мы вешаем один слушатель на весь список.
+    // === LIST EVENT DELEGATION (Clicks) ===
+    // Instead of inline onclick in HTML, we attach one listener to the whole list.
     DOM.list.addEventListener('click', (e) => {
         const item = e.target.closest('.todo-item');
         if (!item) return;
 
         const id = Number(item.dataset.id);
 
-        // Используем .closest() чтобы клики по вложенным SVG тоже засчитывались
+        // Use .closest() so clicks on nested SVG also count
         if (e.target.closest('.delete-btn')) {
             item.classList.add('removing');
-            setTimeout(() => state.deleteTodo(id), 300); // Ожидание CSS-анимации перед удалением из базы
+            setTimeout(() => state.deleteTodo(id), 300); // Wait for CSS animation before removing from store
         }
         else if (e.target.closest('.edit-btn')) {
             Modal.open(id);
         }
     });
 
-    // === ДЕЛЕГИРОВАНИЕ СОБЫТИЙ (Чекбокс) ===
+    // === EVENT DELEGATION (Checkbox) ===
     DOM.list.addEventListener('change', (e) => {
         if (e.target.classList.contains('toggle-cb')) {
             const item = e.target.closest('.todo-item');
@@ -189,7 +191,7 @@ const initEvents = () => {
         }
     });
 
-    // === Фильтры, поиск, очистка ===
+    // === Filters, search, clear ===
     DOM.clearBtn.addEventListener('click', () => state.clearCompleted());
 
     DOM.search.addEventListener('input', (e) => {
@@ -204,19 +206,19 @@ const initEvents = () => {
         render();
     }));
 
-    // === Модальное окно ===
+    // === Modal window ===
     DOM.modalSave.addEventListener('click', () => Modal.save());
     DOM.modalCancel.addEventListener('click', () => Modal.close());
     DOM.modal.addEventListener('click', (e) => e.target === DOM.modal && Modal.close());
     DOM.modalInput.addEventListener('keypress', (e) => e.key === 'Enter' && Modal.save());
 
-    // === Переключение темной темы ===
+    // === Toggle dark theme ===
     DOM.themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-theme');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
-    // === Drag & Drop (Сортировка задач) ===
+    // === Drag & Drop (Sorting tasks) ===
     let dragAfterEl = null;
 
     DOM.list.addEventListener('dragstart', (e) => {
@@ -230,7 +232,7 @@ const initEvents = () => {
         e.preventDefault();
         const draggables = [...DOM.list.querySelectorAll('.todo-item:not(.dragging)')];
         
-        // Находим элемент, перед которым нужно вставить перетаскиваемый
+        // Find element before which to insert dragged one
         dragAfterEl = draggables.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = e.clientY - box.top - box.height / 2;
@@ -251,23 +253,22 @@ const initEvents = () => {
         state.draggedItem.classList.remove('dragging');
         DOM.list.querySelectorAll('.todo-item').forEach(el => el.classList.remove('drag-target-before'));
 
-        // Синхронизация DOM стейта списка с массивом данных (пересохранение порядка)
+        // Sync DOM list state with data array (re-saving order)
         const newOrderIds = [...DOM.list.querySelectorAll('.todo-item')].map(item => Number(item.dataset.id));
         state.todos = newOrderIds.map(id => state.todos.find(t => t.id === id));
         state.save();
     });
 };
 
-// Восстановление темы и текущая дата (через современный Intl API)
+// Restore theme and current date (via modern Intl API)
 const initThemeAndDate = () => {
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
     
-    DOM.date.textContent = new Intl.DateTimeFormat('ru-RU', { 
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-    }).format(new Date());
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    DOM.date.textContent = new Intl.DateTimeFormat('en-US', options).format(new Date());
 };
 
-// СТАРТ ПРИЛОЖЕНИЯ
+// START APP
 const init = () => {
     initThemeAndDate();
     initEvents();

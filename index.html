@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -14,8 +14,8 @@
     <div class="container">
         <header>
             <div class="header-top">
-                <h1>Мои Задачи</h1>
-                <button id="theme-toggle" title="Переключить тему">
+                <h1>My Tasks</h1>
+                <button id="theme-toggle" title="Toggle theme">
                     <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -39,19 +39,19 @@
 
         <form id="todo-form">
             <div class="input-group">
-                <input type="text" id="todo-input" placeholder="Что нужно сделать?" autocomplete="off">
+                <input type="text" id="todo-input" placeholder="What needs to be done?" autocomplete="off">
                 <select id="priority-select">
-                    <option value="low">Низкий</option>
-                    <option value="medium" selected>Средний</option>
-                    <option value="high">Высокий</option>
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
                 </select>
                 <select id="category-select">
-                    <option value="general">📁 Общее</option>
-                    <option value="work">💼 Работа</option>
-                    <option value="personal">👤 Личное</option>
-                    <option value="shopping">🛒 Покупки</option>
+                    <option value="general">📁 General</option>
+                    <option value="work">💼 Work</option>
+                    <option value="personal">👤 Personal</option>
+                    <option value="shopping">🛒 Shopping</option>
                 </select>
-                <button type="submit" id="add-btn">Добавить</button>
+                <button type="submit" id="add-btn">Add</button>
             </div>
         </form>
 
@@ -61,12 +61,12 @@
                     d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                     clip-rule="evenodd" />
             </svg>
-            <input type="text" id="search-input" placeholder="Поиск задач..." autocomplete="off">
+            <input type="text" id="search-input" placeholder="Search tasks..." autocomplete="off">
         </div>
 
         <div class="filters">
-            <button class="filter-btn active" data-filter="active">Активные</button>
-            <button class="filter-btn" data-filter="completed">Выполненные</button>
+            <button class="filter-btn active" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
         </div>
 
         <ul id="todo-list">
@@ -103,37 +103,37 @@
 
 
             </div>
-            <h3>Все дела сделаны!</h3>
-            <p>Время отдохнуть и набраться сил ✨</p>
+            <h3>All tasks are done!</h3>
+            <p>Time to rest and recharge ✨</p>
         </div>
 
 
         <div class="stats">
-            <span id="items-left">0 задач осталось</span>
-            <button id="clear-completed">Очистить выполненные</button>
+            <span id="items-left">0 tasks left</span>
+            <button id="clear-completed">Clear completed</button>
         </div>
     </div>
     <!-- Модальное окно для редактирования -->
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal">
-            <h3>Редактировать задачу</h3>
-            <input type="text" id="modal-input" placeholder="Введите текст...">
+            <h3>Edit task</h3>
+            <input type="text" id="modal-input" placeholder="Enter text...">
             <div class="modal-selects">
                 <select id="modal-priority">
-                    <option value="low">Низкий</option>
-                    <option value="medium">Средний</option>
-                    <option value="high">Высокий</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
                 </select>
                 <select id="modal-category">
-                    <option value="general">📁 Общее</option>
-                    <option value="work">💼 Работа</option>
-                    <option value="personal">👤 Личное</option>
-                    <option value="shopping">🛒 Покупки</option>
+                    <option value="general">📁 General</option>
+                    <option value="work">💼 Work</option>
+                    <option value="personal">👤 Personal</option>
+                    <option value="shopping">🛒 Shopping</option>
                 </select>
             </div>
             <div class="modal-actions">
-                <button id="modal-cancel">Отмена</button>
-                <button id="modal-save">Сохранить</button>
+                <button id="modal-cancel">Cancel</button>
+                <button id="modal-save">Save</button>
             </div>
         </div>
     </div>
