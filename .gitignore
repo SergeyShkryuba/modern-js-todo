@@ -1,22 +1,4 @@
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Logs
+node_modules
+dist
 *.log
-npm-debug.log*
-
-# Dependencies
-node_modules/
-
-# Build
-dist/
-build/
+.DS_Store
